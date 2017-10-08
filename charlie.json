@@ -1,0 +1,118 @@
+{
+  "intents": [
+    {
+      "name": "AMAZON.CancelIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.HelpIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.StopIntent",
+      "samples": []
+    },
+    {
+      "name": "ControlTV",
+      "samples": [
+        "{onoff} the TV",
+        "{onoff} the television",
+        "{updown} the TV",
+        "{updown} the volume",
+        "{updown} the television",
+        "{onoff} {channelname}"
+      ],
+      "slots": [
+        {
+          "name": "onoff",
+          "type": "OnOffType",
+          "samples": []
+        },
+        {
+          "name": "channelname",
+          "type": "AMAZON.TelevisionChannel",
+          "samples": []
+        },
+        {
+          "name": "updown",
+          "type": "UpDownType",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "QueryNet",
+      "samples": [
+        "what's on the network",
+        "are there any {devices} on the network",
+        "what {devices} are on the network",
+        "find {devices} on the network",
+        "list {devices} on the network"
+      ],
+      "slots": [
+        {
+          "name": "devices",
+          "type": "AMAZON.DeviceType",
+          "samples": []
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "OnOffType",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "turn on",
+            "synonyms": [
+              "power on"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "turn off",
+            "synonyms": [
+              "power off"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpDownType",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "turn up",
+            "synonyms": [
+              "increase"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "turn down",
+            "synonyms": [
+              "decrease"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "mute",
+            "synonyms": [
+              "unmute"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
