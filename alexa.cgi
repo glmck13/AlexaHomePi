@@ -2,8 +2,9 @@
 
 PATH=$PWD:$PATH
 
-IRURL="http://askpi.home/ir.cgi"
-FINGURL="http://askpi.home/fing.cgi"
+IRURL="http://mckpi.home/ir.cgi"
+FINGURL="http://mckpi.home/fing.cgi"
+ASKPIURL="http://askpi.home/fifo.cgi"
 
 [ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
 
@@ -22,6 +23,14 @@ case "$Intent" in
 
 	ControlTV)
 		Speech=$(curl -s "$IRURL?OnOff=$OnOff&UpDown=$UpDown&ChannelName=$ChannelName")
+		;;
+
+	AskPi)
+		Speech=$(curl -s "$ASKPIURL?Trigger=$Trigger&Enum=$Enum")
+		;;
+
+	*)
+		Speech="I don't know how to handle $Intent requests."
 		;;
 	esac
 
