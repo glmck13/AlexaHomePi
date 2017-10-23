@@ -7,7 +7,7 @@ def alexa_handler(event, context):
 
     query = {}
     if event['request']['type'] == "LaunchRequest":
-        speech = "Charlie here!  I can explore your home network and control your TV. Ask me things like: What iPhones are on the network? Or, Turn on MSNBC.  How can I help you?"
+        speech = "Charlie here!  I can control your TV, explore your network, and connect to AskPi.  How can I help you?"
         shouldEndSession = False
 
     elif event['request']['type'] == "IntentRequest":
@@ -32,8 +32,13 @@ def alexa_handler(event, context):
                 query['ChannelName'] = slots['channelname']['value']
             except:
                 pass
+        elif intent['name'] == "AskPi":
             try:
-                query['ChannelNumber'] = slots['channelnumber']['value']
+                query['Trigger'] = slots['trigger']['value']
+            except:
+                pass
+            try:
+                query['Enum'] = slots['enum']['value']
             except:
                 pass
 
