@@ -13,6 +13,25 @@
       "samples": []
     },
     {
+      "name": "AskPi",
+      "samples": [
+        "{trigger} {enum}",
+        "to {trigger} {enum}"
+      ],
+      "slots": [
+        {
+          "name": "trigger",
+          "type": "AskPiType",
+          "samples": []
+        },
+        {
+          "name": "enum",
+          "type": "EnumType",
+          "samples": []
+        }
+      ]
+    },
+    {
       "name": "ControlTV",
       "samples": [
         "{onoff} the TV",
@@ -20,7 +39,7 @@
         "{updown} the TV",
         "{updown} the volume",
         "{updown} the television",
-        "{onoff} {channelname}"
+        "{tune} {channelname}"
       ],
       "slots": [
         {
@@ -36,6 +55,11 @@
         {
           "name": "updown",
           "type": "UpDownType",
+          "samples": []
+        },
+        {
+          "name": "tune",
+          "type": "TuneType",
           "samples": []
         }
       ]
@@ -60,6 +84,74 @@
   ],
   "types": [
     {
+      "name": "AskPiType",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "get",
+            "synonyms": [
+              "read",
+              "retrieve",
+              "open",
+              "play",
+              "start",
+              "show",
+              "fetch",
+              "announce"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "EnumType",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "news",
+            "synonyms": [
+              "press",
+              "briefing"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "google news",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "weather",
+            "synonyms": [
+              "forecast"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "mass",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "date",
+            "synonyms": [
+              "time"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "OnOffType",
       "values": [
         {
@@ -77,6 +169,21 @@
             "value": "turn off",
             "synonyms": [
               "power off"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "TuneType",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "tune to",
+            "synonyms": [
+              "switch to",
+              "change to"
             ]
           }
         }
@@ -114,5 +221,46 @@
         }
       ]
     }
-  ]
+  ],
+  "prompts": [
+    {
+      "id": "Elicit.Intent-AskPi.IntentSlot-trigger",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what would you like ask pi to do?"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "version": "1.0",
+    "intents": [
+      {
+        "name": "AskPi",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "trigger",
+            "type": "AskPiType",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AskPi.IntentSlot-trigger"
+            }
+          },
+          {
+            "name": "enum",
+            "type": "EnumType",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      }
+    ]
+  }
 }
