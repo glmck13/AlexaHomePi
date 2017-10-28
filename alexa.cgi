@@ -4,7 +4,8 @@ PATH=$PWD:$PATH
 
 IRURL="http://mckpi.home/ir.cgi"
 FINGURL="http://mckpi.home/fing.cgi"
-ASKPIURL="http://askpi.home/fifo.cgi"
+ASKPICLIENTURL="http://askpi.home/fifo.cgi"
+ASKPISERVERURL="http://askpi.home"
 
 [ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
 
@@ -26,7 +27,16 @@ case "$Intent" in
 		;;
 
 	AskPi)
-		Speech=$(curl -s "$ASKPIURL?Trigger=$Trigger&Enum=$Enum")
+		curl -s "$ASKPISERVERURL?Announce=T&Speech=$Trigger+$Enum" | while read html
+		do
+			if [[ "$html" == @(*src=*|*href=*) ]]; then
+				Speech=$(curl -s "$ASKPICLIENTURL?Trigger=$Trigger&Enum=$Enum")
+
+			elif [[ "$html" == \<p\>*\<?p\> ]]; then
+				html=${html#<p>} html=${html%</p>}
+				Speech="$html"
+			fi
+		done
 		;;
 
 	*)
