@@ -6,6 +6,8 @@ IRURL="http://mckpi.home/ir.cgi"
 FINGURL="http://mckpi.home/fing.cgi"
 ASKPICLIENTURL="http://askpi.home/fifo.cgi"
 ASKPISERVERURL="http://askpi.home"
+#ASKPICLIENTURL="http://192.168.10.1/fifo.cgi"
+#ASKPISERVERURL="http://192.168.10.1"
 
 [ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
 
@@ -19,35 +21,24 @@ done
 case "$Intent" in
 
 	QueryNet)
-		Speech=$(curl -s "$FINGURL?Device=$Device")
+		Response=$(curl -s "$FINGURL?Device=$Device")
 		;;
 
 	ControlTV)
-		Speech=$(curl -s "$IRURL?OnOff=$OnOff&UpDown=$UpDown&ChannelName=$ChannelName")
+		Response=$(curl -s "$IRURL?OnOff=$OnOff&UpDown=$UpDown&ChannelName=$ChannelName")
 		;;
 
 	AskPi)
-		curl -s "$ASKPISERVERURL?Announce=T&Speech=$Trigger+$Enum" | while read html
-		do
-			if [[ "$html" == @(*src=*|*href=*) ]]; then
-				Speech=$(curl -s "$ASKPICLIENTURL?Trigger=$Trigger&Enum=$Enum")
-
-			elif [[ "$html" == \<p\>*\<?p\> ]]; then
-				html=${html#<p>} html=${html%</p>}
-				Speech="$html"
-			fi
-		done
+		Response=$(curl -s "$ASKPISERVERURL?Announce=T&Speech=Alexa+$Trigger+$Enum")
 		;;
 
 	*)
-		Speech="I don't know how to handle $Intent requests."
+		Response="<html><body><p>I don't know how to handle $Intent requests.</p></body></html>"
 		;;
 	esac
 
 cat - <<EOF
 Content-type: text/html
 
-<html>
-<body>$Speech</body>
-</html>
+$Response
 EOF
