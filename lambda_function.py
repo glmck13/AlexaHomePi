@@ -6,6 +6,8 @@ import os
 def alexa_handler(event, context):
 
     query = {}
+    speech = ''; audio = ''
+
     if event['request']['type'] == "LaunchRequest":
         speech = "Charlie here!  I can control your TV, explore your network, and connect to AskPi.  How can I help you?"
         shouldEndSession = False
@@ -44,32 +46,54 @@ def alexa_handler(event, context):
 
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
-        speech = tree.xpath('//body/text()')[0]
+        speech = tree.xpath('//body/p/text()')[0]
+        try:
+            audio = tree.xpath('//body//audio/source/@src')[0]
+        except:
+            audio = ''
         shouldEndSession = True
 
     else:
         speech = "Come back soon! Goodbye!"
         shouldEndSession = True
 
-    return {
+    response = {
         "version": "1.0",
         "sessionAttributes": {},
         "response": {
             "outputSpeech": {
                 "type": "PlainText",
                 "text": speech
-                },
+            },
             "reprompt": {
                 "outputSpeech": {
                     "type": "PlainText",
                     "text": ""
-                    }
-                },
+                }
+            },
             "card": {
                 "type": "Simple",
                 "title": "Charlie",
                 "content": speech
-                },
-            "shouldEndSession": shouldEndSession
-            }
+            },
+            "shouldEndSession": "True"
         }
+    }
+
+    if audio:
+        response['response']['card']['content'] = speech + " [" + audio + "] "
+        response['response']['directives'] = [
+            {
+            "type": "AudioPlayer.Play",
+            "playBehavior": "REPLACE_ALL",
+              "audioItem": {
+                "stream": {
+                  "token": audio,
+                  "url": audio,
+                "offsetInMilliseconds": 0
+                }
+              }
+            }
+        ]
+
+    return response
