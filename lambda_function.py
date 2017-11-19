@@ -6,22 +6,30 @@ import os
 def alexa_handler(event, context):
 
     query = {}
-    speech = ''; audio = ''
+    speech = ''; audio = ''; stopplay = False
+    requesttype = event['request']['type']
+    shouldEndSession = True
 
-    if event['request']['type'] == "LaunchRequest":
+    if requesttype == "LaunchRequest":
         speech = "Charlie here!  I can control your TV, explore your network, and connect to AskPi.  How can I help you?"
         shouldEndSession = False
 
-    elif event['request']['type'] == "IntentRequest":
+    elif requesttype == "IntentRequest":
         intent = event['request']['intent']
-        slots = intent['slots']
-        query['Intent'] = intent['name']
-        if intent['name'] == "QueryNet":
+        intentname = intent['name']
+        query['Intent'] = intentname
+        try:
+            slots = intent['slots']
+        except:
+            slots = {}
+
+        if intentname == "QueryNet":
             try:
                 query['Device'] = slots['devices']['value']
             except:
                 pass
-        elif intent['name'] == "ControlTV":
+
+        elif intentname == "ControlTV":
             try:
                 query['OnOff'] = slots['onoff']['value']
             except:
@@ -34,7 +42,8 @@ def alexa_handler(event, context):
                 query['ChannelName'] = slots['channelname']['value']
             except:
                 pass
-        elif intent['name'] == "AskPi":
+
+        elif intentname == "AskPi":
             try:
                 query['Trigger'] = slots['trigger']['value']
             except:
@@ -44,18 +53,23 @@ def alexa_handler(event, context):
             except:
                 pass
 
-        page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
-        tree = html.fromstring(page.content)
-        speech = tree.xpath('//body/p/text()')[0]
-        try:
-            audio = tree.xpath('//body//audio/source/@src')[0]
-        except:
-            audio = ''
-        shouldEndSession = True
+        elif intentname == "AMAZON.PauseIntent" or intentname == "AMAZON.CancelIntent" or intentname == "AMAZON.StopIntent":
+            stopplay = True
+
+        elif intentname == "AMAZON.ResumeIntent" or intentname == "AMAZON.HelpIntent":
+            pass
+
+        if query:
+            page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
+            tree = html.fromstring(page.content)
+            speech = tree.xpath('//body/p/text()')[0]
+            try:
+                audio = tree.xpath('//body//audio/source/@src')[0]
+            except:
+                audio = ''
 
     else:
         speech = "Come back soon! Goodbye!"
-        shouldEndSession = True
 
     response = {
         "version": "1.0",
@@ -76,7 +90,7 @@ def alexa_handler(event, context):
                 "title": "Charlie",
                 "content": speech
             },
-            "shouldEndSession": "True"
+            "shouldEndSession": shouldEndSession
         }
     }
 
@@ -93,6 +107,14 @@ def alexa_handler(event, context):
                 "offsetInMilliseconds": 0
                 }
               }
+            }
+        ]
+
+    if stopplay:
+        response['response']['directives'] = [
+            {
+            "type": "AudioPlayer.ClearQueue",
+            "clearBehavior": "CLEAR_ALL"
             }
         ]
 
