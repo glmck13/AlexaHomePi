@@ -17,19 +17,20 @@ def alexa_handler(event, context):
     elif requesttype == "IntentRequest":
         intent = event['request']['intent']
         intentname = intent['name']
-        query['Intent'] = intentname
         try:
             slots = intent['slots']
         except:
             slots = {}
 
         if intentname == "QueryNet":
+            query['Intent'] = intentname
             try:
                 query['Device'] = slots['devices']['value']
             except:
                 pass
 
         elif intentname == "ControlTV":
+            query['Intent'] = intentname
             try:
                 query['OnOff'] = slots['onoff']['value']
             except:
@@ -44,6 +45,7 @@ def alexa_handler(event, context):
                 pass
 
         elif intentname == "AskPi":
+            query['Intent'] = intentname
             try:
                 query['Trigger'] = slots['trigger']['value']
             except:
