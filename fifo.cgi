@@ -31,7 +31,6 @@ Content-type: text/html
 	<br><textarea rows=8 cols=40 name="Speech" /></textarea>
 	<br><input type="submit" name="Command" value="Submit" />
 </form>
-EOF
 
 <p>$Response</p>
 EOF
