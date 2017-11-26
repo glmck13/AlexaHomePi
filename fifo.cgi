@@ -15,12 +15,27 @@ done
 
 Response="Message sent."
 
-urlencode -d "SPEECH $Trigger $Enum" >$FIFO
+[ "$Speech$Trigger$Enum" ] && urlencode -d "SPEECH $Speech $Trigger $Enum" >$FIFO
 
 cat - <<-EOF
 Content-type: text/html
 
 <html>
-<body>$Response</body>
+<head>
+<meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+<form action="$SCRIPT_NAME" method="post">
+	Enter your message:
+	<br><textarea rows=8 cols=40 name="Speech" /></textarea>
+	<br><input type="submit" name="Command" value="Submit" />
+</form>
+EOF
+
+<p>$Response</p>
+EOF
+
+</body>
 </html>
 EOF
