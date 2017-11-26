@@ -13,9 +13,10 @@ do
 	[ "$v" ] && export $v
 done
 
-Response="Message sent."
-
-[ "$Speech$Trigger$Enum" ] && urlencode -d "SPEECH $Speech $Trigger $Enum" >$FIFO
+if [ "$Speech$Trigger$Enum" ]; then
+	urlencode -d "SPEECH $Speech $Trigger $Enum" >$FIFO
+	Response="Message sent"
+fi
 
 cat - <<-EOF
 Content-type: text/html
@@ -31,7 +32,9 @@ Content-type: text/html
 	<br><textarea rows=8 cols=40 name="Speech" /></textarea>
 	<br><input type="submit" name="Command" value="Submit" />
 </form>
+EOF
 
+[ "$Response" ] && cat - <<EOF
 <p>$Response</p>
 EOF
 
