@@ -38,6 +38,7 @@ EOF
 <p>$Response</p>
 EOF
 
+cat - <<EOF
 </body>
 </html>
 EOF
