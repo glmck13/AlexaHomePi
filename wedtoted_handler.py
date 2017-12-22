@@ -3,7 +3,7 @@ from lxml import html
 import requests
 import os
 
-def savethedate_handler(event, context):
+def wedtoted_handler(event, context):
 
     query = {}
     speech = ''
@@ -13,7 +13,7 @@ def savethedate_handler(event, context):
     if requesttype in ("LaunchRequest", "IntentRequest"):
         query['Intent'] = "AskPi"
         query['Trigger'] = "Savethedate"
-        query['Enum'] = "09/22/2018 21401 Katie and Danny are getting married"
+        query['Enum'] = "04/21/2018 20001 Colleen and Ted are getting wed"
 
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
@@ -37,7 +37,7 @@ def savethedate_handler(event, context):
             },
             "card": {
                 "type": "Simple",
-                "title": "Savethedate",
+                "title": "WedtoTed",
                 "content": speech
             },
             "shouldEndSession": shouldEndSession
