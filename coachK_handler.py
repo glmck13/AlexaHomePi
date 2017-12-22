@@ -11,7 +11,7 @@ def coachK_handler(event, context):
     shouldEndSession = True
 
     if requesttype == "LaunchRequest":
-        speech = "Coach K here, with information about our last Duke game.  Ask me to read the notes or quotes, or replay the postgame interview.  How can I help you?"
+        speech = "Coach K here, with information about our last and next Duke games.  Ask me to read the notes or quotes, replay the postgame interview, or give details about our upcoming game.  How can I help you?"
         shouldEndSession = False
 
     elif requesttype == "IntentRequest":
