@@ -11,7 +11,7 @@ def alexa_handler(event, context):
     shouldEndSession = True
 
     if requesttype == "LaunchRequest":
-        speech = "Charlie here!  I can control your TV, explore your network, and connect to AskPi.  How can I help you?"
+        speech = "Charlie here!"
         shouldEndSession = False
 
     elif requesttype == "IntentRequest":
