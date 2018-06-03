@@ -24,10 +24,12 @@ prayerContext() {
 	fi
 }
 
-AUDIOURL="https://mckspot.dyndns.org:8443/cdn/candle.m3u"
-CANDLEDB="/var/www/html/cdn/candledb.csv"
-UNKCANDLEDB="/var/www/html/cdn/unkcandle.txt"
-PRAYER="/var/www/html/cdn/prayer.txt"
+URLCDN="https://mckspot.dyndns.org:8443/cdn"
+VARCDN="/var/www/html/cdn"
+CANDLEDB="$VARCDN/candledb.csv"
+UNKCANDLEDB="$VARCDN/unkcandle.txt"
+PRAYER="$VARCDN/prayer.txt"
+AUDIOURL="$URLCDN/candle.m3u"
 Current=$(wc -l <$CANDLEDB)
 if [ "$Current" -eq 0 ]; then
 	Speech="No candles are currently lit. "
@@ -73,8 +75,10 @@ fi
 if [ "$Prayer" ]; then
 	Speech+=$(sed -e "s/%INTENTION%/$(prayerContext "$CandleType" "$Candle")/" <$PRAYER)
 	Audio="<audio controls><source src=$AUDIOURL></audio>"
+	Repeat=$(mediainfo --Inform="Audio;%Duration%" $(<$VARCDN/${AUDIOURL#$URLCDN}) 2>/dev/null)
+	let Repeat=$Repeat/1000/4+10
 fi
 
 cat - <<EOF
-<html><body><p>$Speech</p>$Audio</body></html>
+<html><body><p>$Speech</p><p>$Repeat</p>$Audio</body></html>
 EOF

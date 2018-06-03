@@ -6,7 +6,7 @@ import os
 def candle_handler(event, context):
 
     query = {}
-    speech = ''; audio = ''; stopplay = False
+    speech = ''; repeat=''; audio = ''; stopplay = False
     requesttype = event['request']['type']
     userId = event['session']['user']['userId']
     shouldEndSession = True
@@ -86,8 +86,10 @@ def candle_handler(event, context):
         tree = html.fromstring(page.content)
         speech = tree.xpath('//body/p/text()')[0]
         try:
+            repeat = tree.xpath('//body/p/text()')[1]
             audio = tree.xpath('//body//audio/source/@src')[0]
         except:
+            repeat = ''
             audio = ''
 
     if audio:
@@ -139,7 +141,7 @@ def candle_handler(event, context):
                 "triggerEventTimeMs": 0,
                 "animations": [ 
                         {
-                        "repeat": 20,
+                        "repeat": int(repeat),
                         "targetLights": ["1"],
                         "sequence": [
                                 {
