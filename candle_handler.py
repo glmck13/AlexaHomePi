@@ -6,7 +6,7 @@ import os
 def candle_handler(event, context):
 
     query = {}
-    speech = ''; repeat=''; audio = ''; stopplay = False
+    speech = ''; repeat=''; card = ''; audio = ''; stopplay = False
     requesttype = event['request']['type']
     userId = event['session']['user']['userId']
     shouldEndSession = True
@@ -65,12 +65,12 @@ def candle_handler(event, context):
                 pass
 
         elif intentname == "AMAZON.FallbackIntent":
-            speech = "I did not understand that. " + help
+            speech = "<speak>" + "I did not understand that. " + help + "</speak>"
             shouldEndSession = False
 
         elif intentname == "AMAZON.HelpIntent":
             shouldEndSession = False
-            speech = help
+            speech = "<speak>" + help + "</speak>"
 
         elif intentname == "AMAZON.PauseIntent" or intentname == "AMAZON.CancelIntent" or intentname == "AMAZON.StopIntent":
             stopplay = True
@@ -79,18 +79,19 @@ def candle_handler(event, context):
             pass
 
     else:
-        speech = "Come back any time! Goodbye!"
+        speech = "<speak>" + "Come back any time! Goodbye!" + "</speak>"
 
     if query:
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
-        speech = tree.xpath('//body/p/text()')[0]
+        speech = html.tostring(tree.xpath('//speak')[0])
+        subtree = tree.xpath('//body/p')
         try:
-            repeat = tree.xpath('//body/p/text()')[1]
+            repeat = subtree[0].xpath('string()')
+            card = subtree[1].xpath('string()')
             audio = tree.xpath('//body//audio/source/@src')[0]
         except:
-            repeat = ''
-            audio = ''
+            repeat = ''; card = ''; audio = ''
 
     if audio:
         shouldEndSession = True
@@ -100,7 +101,7 @@ def candle_handler(event, context):
         "sessionAttributes": {},
         "response": {
             "outputSpeech": {
-                "type": "PlainText",
+                "type": "SSML",
                 "text": speech
             },
             "reprompt": {
@@ -112,14 +113,13 @@ def candle_handler(event, context):
             "card": {
                 "type": "Simple",
                 "title": "Votive Candle",
-                "content": speech
+                "content": card
             },
             "shouldEndSession": shouldEndSession
         }
     }
 
     if audio:
-        # response['response']['card']['content'] = speech + " [" + audio + "] "
         response['response']['directives'] = [
             {
             "type": "AudioPlayer.Play",

@@ -55,7 +55,7 @@ elif [ "$Intent" = "BlowoutCandle" ]; then
 	Speech="Your candle is out. "
 
 elif [ "$Lastseen" ]; then
-	print "$Lastseen" | IFS=, read User CandleType Candle
+	print "$Lastseen" | IFS="," read User CandleType Candle
 	Speech+="I'm happy to see you back again today. Please join me in a prayer. "
 	Prayer="y"
 
@@ -75,10 +75,36 @@ fi
 if [ "$Prayer" ]; then
 	Speech+=$(sed -e "s/%INTENTION%/$(prayerContext "$CandleType" "$Candle")/" <$PRAYER)
 	Audio="<audio controls><source src=$AUDIOURL></audio>"
-	Repeat=$(mediainfo --Inform="Audio;%Duration%" $(<$VARCDN/${AUDIOURL#$URLCDN}) 2>/dev/null)
-	let Repeat=$Repeat/1000/4+10
+
+	while IFS="|" read comment text
+	do
+		text=$(print $text)
+		case "$comment" in
+		*mediainfo*)
+			let Repeat="$text"/4500+8
+			;;
+		*Title*)
+			Title="$text"
+			;;
+		*Author*)
+			Author="$text"
+			;;
+		*License*)
+			License="$text"
+			;;
+		*Card*)
+			Card="$text"
+			;;
+		esac
+	done <$VARCDN/${AUDIOURL#$URLCDN}
+
+	Speech+=' <break strength="x-strong"/> '
+
+	[ "$Title" ] && Speech+="If you would like to spend a moment in reflection, here is \"$Title\" "
+	[ "$Author" ] && Speech+="by $Author "
+	[ "$License" ] && Speech+="released under a $License license "
 fi
 
 cat - <<EOF
-<html><body><p>$Speech</p><p>$Repeat</p>$Audio</body></html>
+<html><body><speak>$Speech</speak><p>$Repeat</p><p>$(eval print "$Card")</p>$Audio</body></html>
 EOF
