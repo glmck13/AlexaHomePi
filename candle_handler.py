@@ -102,7 +102,7 @@ def candle_handler(event, context):
         "response": {
             "outputSpeech": {
                 "type": "SSML",
-                "text": speech
+                "ssml": speech
             },
             "reprompt": {
                 "outputSpeech": {
