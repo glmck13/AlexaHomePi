@@ -27,9 +27,9 @@ prayerContext() {
 URLCDN="https://mckspot.dyndns.org:8443/cdn"
 VARCDN="/var/www/html/cdn"
 CANDLEDB="$VARCDN/candledb.csv"
+CANDLESONGS="$VARCDN/candlesongs.txt"
 UNKCANDLEDB="$VARCDN/unkcandle.txt"
-PRAYER="$VARCDN/prayer.txt"
-AUDIOURL="$URLCDN/candle.m3u"
+CANDLEPRAYERS="$VARCDN/candleprayers.txt"
 Current=$(wc -l <$CANDLEDB)
 if [ "$Current" -eq 0 ]; then
 	Speech="No candles are currently lit. "
@@ -73,8 +73,10 @@ elif [ "$Intent" = "LightCandle" ]; then
 fi
 
 if [ "$Prayer" ]; then
-	Speech+=$(sed -e "s/%INTENTION%/$(prayerContext "$CandleType" "$Candle")/" <$PRAYER)
-	Audio="<audio controls><source src=$AUDIOURL></audio>"
+	Prayer=$(shuf -n1 $CANDLEPRAYERS)
+	CandleSong=$(shuf -n1 $CANDLESONGS)
+	Speech+=$(sed -e "s/%INTENTION%/$(prayerContext "$CandleType" "$Candle")/" <$VARCDN/$Prayer)
+	Audio="<audio controls><source src=$URLCDN/$CandleSong></audio>"
 
 	while IFS="|" read comment text
 	do
@@ -96,13 +98,15 @@ if [ "$Prayer" ]; then
 			Card="$text"
 			;;
 		esac
-	done <$VARCDN/${AUDIOURL#$URLCDN}
+	done <$VARCDN/$CandleSong
 
 	Speech+=' <break strength="x-strong"/> '
 
-	[ "$Title" ] && Speech+="If you would like to spend a moment in reflection, here is \"$Title\" "
+	[ "$Title" ] && Speech+="If you would like to spend a moment in reflection, listen to \"$Title\" "
 	[ "$Author" ] && Speech+="by $Author "
 	[ "$License" ] && Speech+="released under a $License license "
+
+	Speech+='.'
 fi
 
 cat - <<EOF
