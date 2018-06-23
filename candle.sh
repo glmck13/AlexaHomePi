@@ -104,7 +104,7 @@ if [ "$Prayer" ]; then
 
 	[ "$Title" ] && Speech+="If you would like to spend a moment in reflection, listen to \"$Title\" "
 	[ "$Author" ] && Speech+="by $Author "
-	[ "$License" ] && Speech+="released under a $License license "
+	# [ "$License" ] && Speech+="released under a $License license "
 
 	Speech+='.'
 fi
