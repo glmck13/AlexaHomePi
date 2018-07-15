@@ -21,7 +21,7 @@ The resultant alexa.zip file is then uploaded to AWS.
 Note that the Lambda "Handler" entry is specified as <file name, w/o extension>.<function name>.  So in the current instance this would be specified as "lambda_function.alexa_handler", since "lambda_function.py" is the name of the python file, and "alexa_handler" is the name of the method defined within the file that is invoked when "Charlie" is opened.  
 
 ## HTTPS Home Server
-I configured an Apache web server on one of my Pi's to listen to port 8443 for HTTPS requests.  This required that I edit a couple of the Apache configuration files as follows:
+I configured an Apache web server on one of my Pi's to listen to port 8443 for HTTPS requests.  First, I had to "a2enmod ssl", and afterwards edited a couple of the Apache configuration files as follows:
 
 ```
 diff ports.conf /etc/apache2 
