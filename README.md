@@ -13,7 +13,7 @@ The python code for the skill can be found in "lambda\_function.py".  AWS requir
 ```
 mkdir alexa; cd alexa
 cp ../lambda_function.py .
-pip install lxml requests -t .
+pip install lxml requests --system -t . # Note: --system is needed to circumvent a bug with the Ubuntu/pip build
 zip -r ../alexa.zip *
 ```
 The resultant alexa.zip file is then uploaded to AWS.  
