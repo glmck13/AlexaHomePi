@@ -65,7 +65,7 @@ def candle_handler(event, context):
                 pass
 
         elif intentname == "AMAZON.FallbackIntent":
-            speech = "<speak>" + "I did not understand that. " + help + "</speak>"
+            speech = "<speak>" + "OK. " + help + "</speak>"
             shouldEndSession = False
 
         elif intentname == "AMAZON.HelpIntent":
