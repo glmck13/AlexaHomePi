@@ -24,7 +24,7 @@ prayerContext() {
 	fi
 }
 
-URLCDN="https://mckspot.dyndns.org:8443/cdn"
+URLCDN="https://mckserver.dyndns.org/cdn"
 VARCDN="/var/www/html/cdn"
 CANDLEDB="$VARCDN/candledb.csv"
 CANDLESONGS="$VARCDN/candlesongs.txt"
