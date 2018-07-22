@@ -60,7 +60,7 @@ elif [ "$Lastseen" ]; then
 	Prayer="y"
 
 elif [ "$Request" = "LaunchRequest" ]; then
-	Speech+="Do you need instructions? "
+	Speech+="Do you need help, or would you like to light a candle? "
 
 elif [ "$Intent" = "LightCandle" ]; then
 	if [ ! "$CandleType" ]; then
