@@ -72,6 +72,8 @@ elif [ "$Intent" = "LightCandle" ]; then
 	Prayer="y"
 fi
 
+chmod g+w $CANDLEDB
+
 if [ "$Prayer" ]; then
 	Prayer=$(shuf -n1 $CANDLEPRAYERS)
 	CandleSong=$(shuf -n1 $CANDLESONGS)
