@@ -6,11 +6,11 @@ import os
 def candle_handler(event, context):
 
     query = {}
-    speech = ''; repeat=''; card = ''; audio = ''; stopplay = False
+    speech = ''; color=''; repeat=''; card = ''; audio = ''; stopplay = False
     requesttype = event['request']['type']
     userId = event['session']['user']['userId']
     shouldEndSession = True
-    help = "You can ask to light a candle for an intention, blow out your candle, or ask what the other candles are lit for.  If you have an Echo button, press it once now so I can light that up too. How can I help you? "
+    help = "You can ask to light a candle for an intention, or blow out your candle.  If you have an Echo button, press it once now so I can light that up too. How can I help you? "
 
     if requesttype == "LaunchRequest":
         query['Intent'] = "LightCandle"
@@ -40,29 +40,7 @@ def candle_handler(event, context):
             query['Intent'] = intentname
             query['Request'] = requesttype
             query['User'] = userId
-            try:
-                query['Candle'] = slots['intention']['value']
-                query['CandleType'] = slots['intention']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
-            except:
-                pass
-
-            try:
-                query['Candle'] = slots['blessing']['value']
-                query['CandleType'] = slots['blessing']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
-            except:
-                pass
-
-            try:
-                query['Candle'] = slots['relative']['value']
-                query['CandleType'] = slots['relative']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
-            except:
-                pass
-
-            try:
-                query['Candle'] = slots['needy']['value']
-                query['CandleType'] = slots['needy']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
-            except:
-                pass
+            query['Candle'] = "Intention"
 
         elif intentname == "AMAZON.FallbackIntent":
             speech = "<speak>" + "OK. " + help + "</speak>"
@@ -87,8 +65,9 @@ def candle_handler(event, context):
         speech = html.tostring(tree.xpath('//speak')[0])
         subtree = tree.xpath('//body/p')
         try:
-            repeat = subtree[0].xpath('string()')
-            card = subtree[1].xpath('string()')
+            color = subtree[0].xpath('string()')
+            repeat = subtree[1].xpath('string()')
+            card = subtree[2].xpath('string()')
             audio = tree.xpath('//body//audio/source/@src')[0]
         except:
             repeat = ''; card = ''; audio = ''
@@ -146,22 +125,22 @@ def candle_handler(event, context):
                         "sequence": [
                                 {
                                 "durationMs": 1,
-                                "color": "#000000",
+                                "color": "000000",
                                 "blend": True
                                 },
                                 {
                                 "durationMs": 2000,
-                                "color": "#FFD400",
+                                "color": color,
                                 "blend": True
                                 },
                                 {
                                 "durationMs": 300,
-                                "color": "#FFD400",
+                                "color": color,
                                 "blend": True
                                 },
                                 {
                                 "durationMs": 2000,
-                                "color": "#000000",
+                                "color": "000000",
                                 "blend": True
                                 }
                             ]
