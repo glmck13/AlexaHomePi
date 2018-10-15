@@ -1,35 +1,9 @@
 #!/bin/ksh
 
-statsContext() {
-	if [ "$1" = "Needy" ]; then
-		print "the $1"
-	elif [ "$1" = "Blessing" ]; then
-		print "a $1"
-	elif [ "$1" = "Relative" ]; then
-		print "a $1"
-	elif [ "$1" = "Intention" ]; then
-		print "a special $1"
-	fi
-}
-
-prayerContext() {
-	if [ "$1" = "Needy" ]; then
-		print "the $2"
-	elif [ "$1" = "Blessing" ]; then
-		print "$2"
-	elif [ "$1" = "Relative" ]; then
-		print "my $2"
-	elif [ "$1" = "Intention" ]; then
-		print "my $2"
-	fi
-}
-
 URLCDN="https://mckserver.dyndns.org/cdn/candle"
 VARCDN="/var/www/html/cdn/candle"
 CANDLEDB="$VARCDN/candledb.csv"
-CANDLESONGS="$VARCDN/candlesongs.txt"
-UNKCANDLEDB="$VARCDN/unkcandle.txt"
-CANDLEPRAYERS="$VARCDN/candleprayers.txt"
+
 Current=$(wc -l <$CANDLEDB)
 if [ "$Current" -eq 0 ]; then
 	Speech="No candles are currently lit. "
@@ -38,47 +12,47 @@ elif [ "$Current" -eq 1 ]; then
 else
 	Speech="$Current candles are currently lit. "
 fi
+
 Audio=""
-Prayer=""
-Lastseen=$(grep "^$User," $CANDLEDB)
+
+LastSeen=$(grep "^$User," $CANDLEDB)
 
 if [ "$Intent" = "GetCandleStats" ]; then
-	cut -f2 -d, <$CANDLEDB | sort | uniq | while read CandleType
-	do
-		n=$(grep ",$CandleType," $CANDLEDB | wc -l)
-		Speech+="$n candles are lit for $(statsContext "$CandleType"). "
-	done
+	:
 
 elif [ "$Intent" = "BlowoutCandle" ]; then
 	grep -v "^$User," $CANDLEDB >$CANDLEDB.tmp
 	mv $CANDLEDB.tmp $CANDLEDB
 	Speech="Your candle is out. "
 
-elif [ "$Lastseen" ]; then
-	print "$Lastseen" | IFS="," read User CandleType Candle
-	Speech+="I'm happy to see you back again today. Please join me in a prayer. "
-	Prayer="y"
+elif [ "$LastSeen" ]; then
+	print "$LastSeen" | IFS="," read User Candle
+	Speech+="I'm happy to see you back again today. "
+	Audio="y"
 
 elif [ "$Request" = "LaunchRequest" ]; then
 	Speech+="Do you need help, or would you like to light a candle? "
 
 elif [ "$Intent" = "LightCandle" ]; then
-	if [ ! "$CandleType" ]; then
-		[ "$Candle" ] && print "$Candle" >>$UNKCANDLEDB
-		CandleType="Intention" Candle="Intention"
-	fi
-	print "$User,$CandleType,$Candle" >>$CANDLEDB
-	Speech="I am lighting a candle for you. Please join me in a prayer. "
-	Prayer="y"
+	print "$User,$Candle" >>$CANDLEDB
+	Speech="I am lighting a candle for you. "
+	Audio="y"
 fi
 
 chmod g+w $CANDLEDB
 
-if [ "$Prayer" ]; then
-	Prayer=$(shuf -n1 $CANDLEPRAYERS)
-	CandleSong=$(shuf -n1 $CANDLESONGS)
-	Speech+=$(sed -e "s/%INTENTION%/$(prayerContext "$CandleType" "$Candle")/" <$VARCDN/$Prayer)
-	Audio="<audio controls><source src=$URLCDN/$CandleSong></audio>"
+if [ "$Audio" ]; then
+
+	AudioFile="$VARCDN/$(date +%j)-*.m3u"
+
+	if [ ! "$LastSeen" -a -f $AudioFile ]; then
+		AudioFile=$(ls $AudioFile)
+	else
+		AudioFile=$(ls -1 $VARCDN/*.m3u | shuf -n1)
+	fi
+	AudioFile=${AudioFile##*/}
+
+	Audio="<audio controls><source src=$URLCDN/$AudioFile></audio>"
 
 	while IFS="|" read comment text
 	do
@@ -87,30 +61,24 @@ if [ "$Prayer" ]; then
 		*mediainfo*)
 			let Repeat="$text"/4500+8
 			;;
-		*Title*)
-			Title="$text"
+		*Repeat*)
+			Repeat="$text"
 			;;
-		*Author*)
-			Author="$text"
+		*Alexa*)
+			AlexaText="$text"
 			;;
-		*License*)
-			License="$text"
+		*Button*)
+			ButtonColor="$text"
 			;;
 		*Card*)
 			Card="$text"
 			;;
 		esac
-	done <$VARCDN/$CandleSong
+	done <$VARCDN/$AudioFile
 
-	Speech+=' <break strength="x-strong"/> '
-
-	[ "$Title" ] && Speech+="If you would like to spend a moment in reflection, listen to \"$Title\" "
-	[ "$Author" ] && Speech+="by $Author "
-	# [ "$License" ] && Speech+="released under a $License license "
-
-	Speech+='.'
+	[ "$AlexaText" ] && Speech+="$AlexaText<break time=\"1s\"/></break>"
 fi
 
 cat - <<EOF
-<html><body><speak>$Speech</speak><p>$Repeat</p><p>$(eval print "$Card")</p>$Audio</body></html>
+<html><body><speak>$Speech</speak><p>$ButtonColor</p><p>$Repeat</p><p>$(eval print "$Card")</p>$Audio</body></html>
 EOF
