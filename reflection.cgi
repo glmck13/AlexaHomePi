@@ -31,7 +31,7 @@ Reflection=$(urlencode -d "$Reflection")
 Day=$(date -d "`date +%Y`-01-01 +$(( ${Julian} - 1 ))days" +"%A, %B %d")
 
 case "$Command" in
-	Create)
+	Create*)
 		print "$Reflection" | AWS_VOICE=$Voice aws-polly.sh >$MP3FILE
 		cat - <<-EOF >$M3UFILE
 		# Repeat | $Repeat
@@ -41,6 +41,10 @@ case "$Command" in
 		# Reflection | $Reflection
 		$URLCDN/$MP3FILE
 		EOF
+		;;
+		
+	Combine*)
+		sox $(ls [0-9]*.mp3 | shuf | sed -e "s/$/ silence.mp3/") default.mp3
 		;;
 esac
 
@@ -92,7 +96,8 @@ Repeat: <input type="text" size=3 name="Repeat" value="$Repeat">
 
 <p>Reflection:<br><textarea rows=8 cols=80 name="Reflection" />$Reflection</textarea></p>
 
-<input type="submit" name="Command" value="Create" /><br>
+<input type="submit" name="Command" value="Create File" />
+<input type="submit" name="Command" value="Combine All" /><br>
 
 </form>
 
