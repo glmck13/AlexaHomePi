@@ -48,7 +48,7 @@ if [ "$Audio" ]; then
 	if [ ! "$LastSeen" -a -f $AudioFile ]; then
 		AudioFile=$(ls $AudioFile)
 	else
-		AudioFile=$(ls -1 $VARCDN/*.m3u | shuf -n1)
+		AudioFile=default.m3u
 	fi
 	AudioFile=${AudioFile##*/}
 
