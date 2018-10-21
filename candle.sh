@@ -48,7 +48,7 @@ if [ "$Audio" ]; then
 	if [ ! "$LastSeen" -a -f $AudioFile ]; then
 		AudioFile=$(ls $AudioFile)
 	else
-		AudioFile=default.m3u
+		AudioFile="default.m3u"
 	fi
 	AudioFile=${AudioFile##*/}
 
