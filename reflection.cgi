@@ -42,7 +42,7 @@ case "$Command" in
 		$URLCDN/$MP3FILE
 		EOF
 		;;
-		
+
 	Combine*)
 		sox $(ls [0-9]*.mp3 | shuf | sed -e "s/$/ silence.mp3/") default.mp3
 		;;
@@ -60,15 +60,9 @@ Content-type: text/html
 Julian: <input type="text" size=3 name="Julian" value="$Julian">
 
 Voice: <select name="Voice">
-<option value="Ivy">Ivy</option>
 <option value="Joanna">Joanna</option>
-<option value="Kendra">Kendra</option>
-<option value="Kimberly">Kimberly</option>
 <option value="Salli">Salli</option>
-<option value="Amy">Amy</option>
-<option value="Emma">Emma</option>
 <option value="Joey">Joey</option>
-<option value="Justin">Justin</option>
 <option selected value="Matthew">Matthew</option>
 <option value="Brian">Brian</option>
 </select>
