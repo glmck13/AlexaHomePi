@@ -32,14 +32,14 @@ Day=$(date -d "`date +%Y`-01-01 +$(( ${Julian} - 1 ))days" +"%A, %B %d")
 
 case "$Command" in
 	Create*)
-		print "$Reflection" | AWS_VOICE=$Voice aws-polly.sh >$MP3FILE
+		# print "$Reflection" | AWS_VOICE=$Voice aws-polly.sh >$MP3FILE
 		cat - <<-EOF >$M3UFILE
 		# Repeat | $Repeat
 		# Button | $Color
 		# Voice | $Voice
 		# Alexa | Here is the reflection for $Day.
-		# Reflection | $Reflection
-		$URLCDN/$MP3FILE
+		# Reflection | <voice name="$Voice">$Reflection</voice>
+		$Audio
 		EOF
 		;;
 
@@ -88,6 +88,8 @@ Color: <select name="Color">
 Repeat: <input type="text" size=3 name="Repeat" value="$Repeat">
 </p>
 
+<p>Audio:<br><input type="text" size=80 name="Audio" value="$Audio"></p>
+
 <p>Reflection:<br><textarea rows=8 cols=80 name="Reflection" />$Reflection</textarea></p>
 
 <input type="submit" name="Command" value="Create File" />
@@ -98,7 +100,7 @@ Repeat: <input type="text" size=3 name="Repeat" value="$Repeat">
 <hr>
 
 <pre>
-$(print "Today is day $Julian: $Day"; ls *.m3u; [ "$Command" ] && cat $M3UFILE)
+$(print "Today is day $Julian: $Day"; [ "$Command" ] && cat $M3UFILE)
 </pre>
 
 </html>

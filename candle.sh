@@ -48,7 +48,7 @@ if [ "$Audio" ]; then
 	if [ ! "$LastSeen" -a -f $AudioFile ]; then
 		AudioFile=$(ls $AudioFile)
 	else
-		AudioFile="default.m3u"
+		AudioFile=$(ls -1 $VARCDN/*.m3u | shuf -n1)
 	fi
 	AudioFile=${AudioFile##*/}
 
@@ -66,6 +66,9 @@ if [ "$Audio" ]; then
 			;;
 		*Alexa*)
 			AlexaText="$text"
+			;;
+		*Reflection*)
+			AlexaText+="$text"
 			;;
 		*Button*)
 			ButtonColor="$text"
