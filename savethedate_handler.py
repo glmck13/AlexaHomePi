@@ -13,7 +13,7 @@ def savethedate_handler(event, context):
     if requesttype in ("LaunchRequest", "IntentRequest"):
         query['Intent'] = "AskPi"
         query['Trigger'] = "Savethedate"
-        query['Enum'] = "03/15/2019 14623 Danny matches"
+        query['Enum'] = os.environ.get('ALEXA_EVENT')
 
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
