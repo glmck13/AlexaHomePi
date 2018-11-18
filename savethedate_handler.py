@@ -26,8 +26,8 @@ def savethedate_handler(event, context):
         "sessionAttributes": {},
         "response": {
             "outputSpeech": {
-                "type": "PlainText",
-                "text": speech
+                "type": "SSML",
+                "ssml": speech
             },
             "reprompt": {
                 "outputSpeech": {
