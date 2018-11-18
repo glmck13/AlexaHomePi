@@ -17,9 +17,9 @@ def savethedate_handler(event, context):
 
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
-        speech = tree.xpath('//body/p/text()')[0]
+        speech = html.tostring(tree.xpath('//speak')[0])
     else:
-        speech = "Come back soon! Goodbye!"
+        speech = "<speak>" + "Come back any time! Goodbye!" + "</speak>"
 
     response = {
         "version": "1.0",
