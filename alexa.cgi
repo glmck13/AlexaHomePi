@@ -2,8 +2,8 @@
 
 PATH=$PWD:$PATH
 
-IRURL="http://mckpi.home/ir.cgi"
-FINGURL="http://mckpi.home/fing.cgi"
+#IRURL="http://mckpi.home/ir.cgi"
+#FINGURL="http://mckpi.home/fing.cgi"
 ASKPICLIENTURL="http://askpi.home/fifo.cgi"
 ASKPISERVERURL="http://askpi.home"
 #ASKPICLIENTURL="http://192.168.10.1/fifo.cgi"
@@ -20,16 +20,27 @@ done
 
 case "$Intent" in
 
+	LightCandle|BlowoutCandle|GetCandleStats)
+		Response=$(candle.sh)
+		;;
+
 	QueryNet)
-		Response=$(curl -s "$FINGURL?Device=$Device")
+		#Response=$(curl -s "$FINGURL?Device=$Device")
 		;;
 
 	ControlTV)
-		Response=$(curl -s "$IRURL?OnOff=$OnOff&UpDown=$UpDown&ChannelName=$ChannelName")
+		#Response=$(curl -s "$IRURL?OnOff=$OnOff&UpDown=$UpDown&ChannelName=$ChannelName")
 		;;
 
 	AskPi)
+		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v2/accounts/~current/settings/Profile.name >&2
+		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v2/accounts/~current/settings/Profile.email >&2
+		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v1/devices/$Device/settings/address >&2
 		Response=$(curl -s "$ASKPISERVERURL?Announce=T&Speech=Alexa+$Trigger+$Enum")
+		;;
+
+	StreamAudio)
+		Response=$(radioServer.sh $Station)
 		;;
 
 	*)
