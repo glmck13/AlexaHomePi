@@ -43,6 +43,14 @@ case "$Intent" in
 		Response=$(radioServer.sh $Station)
 		;;
 
+	StayInTouch)
+		Response=$(inTouch.sh "$Member" "$Count")
+		;;
+
+	PlayScripture)
+		Response=$(scripture.sh)
+		;;
+
 	*)
 		Response="<html><body><p>I don't know how to handle $Intent requests.</p></body></html>"
 		;;
