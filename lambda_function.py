@@ -8,6 +8,7 @@ def alexa_handler(event, context):
     query = {}
     speech = ''; audio = ''; stopplay = False
     requesttype = event['request']['type']
+    sysinfo = event['context']['System']
     shouldEndSession = True
 
     if requesttype == "LaunchRequest":
@@ -52,6 +53,18 @@ def alexa_handler(event, context):
                 pass
             try:
                 query['Enum'] = slots['enum']['value']
+            except:
+                pass
+            try:
+                query['Endpoint'] = sysinfo['apiEndpoint']
+            except:
+                pass
+            try:
+                query['Accesstoken'] = sysinfo['apiAccessToken']
+            except:
+                pass
+            try:
+                query['Device'] = sysinfo['device']['deviceId']
             except:
                 pass
 
