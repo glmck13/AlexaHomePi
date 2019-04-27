@@ -52,7 +52,7 @@ case "$Intent" in
 		;;
 
 	*)
-		Response="<html><body><p>I don't know how to handle $Intent requests.</p></body></html>"
+		Response="<html><body><speak>I don't know how to handle $Intent requests.</speak></body></html>"
 		;;
 	esac
 
