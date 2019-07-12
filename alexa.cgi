@@ -17,6 +17,7 @@ do
 	print $vars | IFS='&' read v vars
 	[ "$v" ] && export $v
 done
+export Platform="Alexa"
 
 case "$Intent" in
 
