@@ -37,6 +37,8 @@ do
 	[ ! "$cdr" ] && continue
 
 	[[ $cdr == 0* ]] && continue
+	
+	[[ $cdr == *NOANSWER ]] && continue
 
 	grep "^$cdr" $CONFFILE | IFS=, read number voice ringtone
 
