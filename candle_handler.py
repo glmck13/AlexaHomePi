@@ -1,7 +1,11 @@
-from __future__ import print_function
 from lxml import html
 import requests
 import os
+import json
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def candle_handler(event, context):
 
@@ -62,7 +66,7 @@ def candle_handler(event, context):
     if query:
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
-        speech = html.tostring(tree.xpath('//speak')[0])
+        speech = html.tostring(tree.xpath('//speak')[0]).decode()
         subtree = tree.xpath('//body/p')
         try:
             color = subtree[0].xpath('string()')
