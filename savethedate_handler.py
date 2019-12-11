@@ -1,4 +1,3 @@
-from __future__ import print_function
 from lxml import html
 import requests
 import os
@@ -17,7 +16,7 @@ def savethedate_handler(event, context):
 
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
         tree = html.fromstring(page.content)
-        speech = html.tostring(tree.xpath('//speak')[0])
+        speech = html.tostring(tree.xpath('//speak')[0]).decode()
     else:
         speech = "<speak>" + "Come back any time! Goodbye!" + "</speak>"
 
