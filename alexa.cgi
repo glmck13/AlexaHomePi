@@ -37,6 +37,7 @@ case "$Intent" in
 		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v2/accounts/~current/settings/Profile.name >&2
 		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v2/accounts/~current/settings/Profile.email >&2
 		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v1/devices/$Device/settings/address >&2
+		#curl -s -H "Authorization: Bearer $Accesstoken" $(urlencode -d $Endpoint)/v2/devices/$Device/settings/System.timeZone >&2
 		Response=$(curl -s "$ASKPISERVERURL?Announce=T&Speech=Alexa+$Trigger+$Enum")
 		;;
 
