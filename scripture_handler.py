@@ -5,9 +5,8 @@ import os
 def scripture_handler(event, context):
 
     query = {}
-    speech = ''; audio = ''; stopplay = False
+    speech = ''; audio = ''; stopplay = False; shouldEndSession = True
     requesttype = event['request']['type']
-    shouldEndSession = True
 
     if requesttype == "LaunchRequest":
         query['Intent'] = "PlayScripture"
@@ -19,11 +18,17 @@ def scripture_handler(event, context):
         if intentname in ("PlayScripture", "AMAZON.FallbackIntent", "AMAZON.HelpIntent"):
             query['Intent'] = "PlayScripture"
 
-        elif intentname in ("AMAZON.PauseIntent", "AMAZON.CancelIntent", "AMAZON.StopIntent", "AMAZON.NavigateHomeIntent"):
-            stopplay = True
+        elif intentname in ("AMAZON.CancelIntent", "AMAZON.StopIntent", "AMAZON.NavigateHomeIntent"):
+            speech = 'Goodbye!'; stopplay = True; shouldEndSession = True
 
-        elif intentname == "AMAZON.ResumeIntent":
-            pass
+        elif intentname in ("AMAZON.PauseIntent"):
+            speech = 'OK!'; stopplay = True; shouldEndSession = False
+
+        elif intentname in ("AMAZON.ResumeIntent"):
+            speech = 'OK!'; stopplay = False; shouldEndSession = False
+
+        elif intentname in ("AMAZON.NextIntent", "AMAZON.PreviousIntent", "AMAZON.RepeatIntent", "AMAZON.StartOverIntent"):
+            speech = 'OK!'; stopplay = False; shouldEndSession = False
 
     if query:
         page = requests.get(os.environ.get('ALEXA_URL'), auth=(os.environ.get('ALEXA_USER'), os.environ.get('ALEXA_PASS')), params=query)
