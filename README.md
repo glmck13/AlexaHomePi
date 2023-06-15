@@ -52,6 +52,3 @@ Lastly, I reconfigured my home router to port-forward 8443 to the Pi which is se
 ir.cgi handles ControlTV intents.  I outfitted one of the Pi's in my house with an [IR transciever HAT from Irdroid](http://www.irdroid.com/irdroid-rpi-infrared-transceiver/), and installed the [LIRC](http://www.lirc.org) package.  I then followed the directions to lirecord the signals on my DirecTV RC73 remote.  Since the RC73 can operate in both IR and RF modes, I first had to set both my remote & the DirecTV set-top box for IR.  I noticed, however, that while KEY\_POWER correctly operated my DirecTV box, it had no effect on my TV.  After a lot of playing around, I accidentally discovered that my RC73 remote would output IR codes for the power-on/off keys even when configured for RF!  When I lirecorded these signals separately, I was able to control my TV. 
 
 Look [here](https://raspberrypi.stackexchange.com/questions/81876/raspberry-pi-3-not-lirc-not-running-working) for the latest on running LIRC on the Raspbian Stretch release.  
-
-## Fing CGI script
-## Fifo CGI script
