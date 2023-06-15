@@ -1,13 +1,23 @@
 #!/bin/ksh
 
-URLBASE="https://mckserver.dyndns.org"
+URLBASE="https://mckspot.net:8443"
 VARBASE="/var/www/html"
 M3UFILE="./cdn/misc/scripture.m3u"
 
-url=$(curl -s "https://soundcloud.com/usccb-readings/$(date +"%Y-%m-%d")-usccb-daily-mass-readings" | grep '<script>' | tr ',' '\n' | grep '^"media":')
+typeset -l today
+today=$(date +"%B-%e-%Y")
+today=${today// /}
+today="https://soundcloud.com/usccb-readings/daily-mass-reading-podcast-for-$today"
+
+#url=$(curl -s "https://soundcloud.com/usccb-readings/$(date +"%Y-%m-%d")-usccb-day-mass-readings" | grep '<script>' | tr ',' '\n' | grep '^"media":')
+#url=$(curl -s "https://soundcloud.com/usccb-readings/$(date +"%Y-%m-%d")-usccb-year-b-mass-readings" | grep '<script>' | tr ',' '\n' | grep '^"media":')
+#url=$(curl -s "https://soundcloud.com/usccb-readings/$(date +"%Y-%m-%d")-usccb-daily-mass-readings" | grep '<script>' | tr ',' '\n' | grep '^"media":')
+
+url=$(curl -s "$today" | grep '<script>' | tr ',' '\n' | grep '^"media":')
 url=${url#*:} url=${url#*:} url=${url#*:}
-url=$(curl -s ${url//\"/}?client_id=td3EmUt9FTcWzOKw2nAgPrTj8XIM8WEq)
+url=$(curl -s ${url//\"/}?client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P)
 url=${url#*:} url=${url%*?}
+
 curl -s ${url//\"/} >$VARBASE/$M3UFILE
 
 cat - <<EOF
